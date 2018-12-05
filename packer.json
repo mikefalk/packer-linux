@@ -28,11 +28,11 @@
       ]
     },
     { "type": "file",
-      "destination": "/tmp/",
+      "destination": "/tmp/awslogs.conf",
       "source": "awslogs.conf"
     },
     { "type": "file",
-      "destination": "/tmp/",
+      "destination": "/tmp/awscli.conf",
       "source": "awscli.conf"
     },
     { "type": "shell",
