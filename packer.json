@@ -30,11 +30,11 @@
       ]
     },
     {  "type": "file",
-       "destination": "/etc/awslogs/",
+       "destination": "/tmp/",
        "source": "awslogs.conf"
     },
     {  "type": "file",
-       "destination": "/etc/awslogs/",
+       "destination": "/tmp/",
        "source": "awscli.conf"
     }
   ]
