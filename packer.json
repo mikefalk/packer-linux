@@ -41,5 +41,7 @@
 	"sudo mv /tmp/awscli.conf /etc/awslogs/",
         "sudo service awslogs start",
         "sudo chkconfig awslogs on"
+      ]
+    }
   ]
 } 
