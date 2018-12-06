@@ -4,7 +4,8 @@
     {
       "aws_access_key": "{{env `aws_access_key`}}",
       "aws_secret_key": "{{env `aws_secret_key`}}",
-      "build": "{{env `Build`}}"
+      "build": "{{env `Build`}}",
+      "udthome": "{{env `udthome`}}"
     },
   "builders": [
     {
@@ -45,7 +46,10 @@
 	"sudo mv /tmp/awscli.conf /etc/awslogs/",
         "sudo service awslogs start",
         "sudo chkconfig awslogs on",
-	"sudo mv "
+	"sudo tar xvfz /tmp/bin.tar.gz -C > \"{{user `udthome`}}\"/bin/",
+	"ln -s /usr/lib/x86_64-linux-gnu/libgdbm.so /usr/lib/libgdbm.so.2",
+	"sh -c i cd \"{{user `udthome`}}\"/bin; \(echo yes | cat\) | ./udtinstall",
+	"ENV PATH $PATH:\"{{user `udthome`}}\"/bin"
       ]
     }
   ]
