@@ -49,7 +49,8 @@
 	"sudo tar xvfz /tmp/bin.tar.gz -C > \"{{user `udthome`}}\"/bin/",
 	"ln -s /usr/lib/x86_64-linux-gnu/libgdbm.so /usr/lib/libgdbm.so.2",
 	"sh -c i cd \"{{user `udthome`}}\"/bin; \(echo yes | cat\) | ./udtinstall",
-	"ENV PATH $PATH:\"{{user `udthome`}}\"/bin"
+	"ENV PATH $PATH:\"{{user `udthome`}}\"/bin",
+	"sed -i 's/MAX_RETN_LEVEL=[0-9]\+/MAX_RETN_LEVEL=10/;s/MAX_CAPT_LEVEL=[0-9]\+/MAX_CAPT_LEVEL=10/' /usr/ud81/include/udtconfig"
       ]
     }
   ]
