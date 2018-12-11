@@ -5,7 +5,8 @@
       "aws_access_key": "{{env `aws_access_key`}}",
       "aws_secret_key": "{{env `aws_secret_key`}}",
       "build": "{{env `Build`}}",
-      "udthome": "{{env `udthome`}}"
+      "udthome": "{{env `udthome`}}",
+      "infolease_base": "{{env `infolease_base`}}"
     },
   "builders": [
     {
@@ -52,6 +53,19 @@
 	"ENV PATH $PATH:\"{{user `udthome`}}\"/bin",
 	"sed -i 's/MAX_RETN_LEVEL=[0-9]\+/MAX_RETN_LEVEL=10/;s/MAX_CAPT_LEVEL=[0-9]\+/MAX_CAPT_LEVEL=10/' /usr/ud81/include/udtconfig"
       ]
+    },
+    { "type": "file",
+      "destination": "/tmp/InfoLeaseAppServer_install.sh",
+      "source": "InfoLeaseAppServer_install.sh"
+    },
+    { "type": "shell",
+      "inline": [
+        "sh -c \"(echo 1 && echo \"{{user `infolease_base`}}\"/info && echo \"{{user `udthome`}}\" && echo info && echo 1 && echo idsroot && echo && echo && echo && echo && echo main && echo && echo) | sh /tmp/InfoLeaseAppServer_install.sh"
+      ]
+    },
+    { "type": "file",
+      "destination": "/tmp/\"{{user `info_license`}}\"",
+      "source": "{{user `info_license`}}\""
     }
   ]
-} 
+}
