@@ -1,11 +1,12 @@
 {
   "_comment": "Simple Packer Template using Amazon Linux 2018.03",
-  "variables": 
+  "variables":
     {
       "aws_access_key": "{{env `aws_access_key`}}",
       "aws_secret_key": "{{env `aws_secret_key`}}",
       "build": "{{env `Build`}}",
-      "udthome": "{{env `udthome`}}"
+      "udthome": "{{env `udthome`}}",
+      "infolease_base": "{{env `infolease_base`}}"
     },
   "builders": [
     {
@@ -43,15 +44,73 @@
     { "type": "shell",
       "inline": [
         "sudo mv /tmp/awslogs.conf /etc/awslogs/",
-	"sudo mv /tmp/awscli.conf /etc/awslogs/",
+        "sudo mv /tmp/awscli.conf /etc/awslogs/",
         "sudo service awslogs start",
         "sudo chkconfig awslogs on",
-	"sudo tar xvfz /tmp/bin.tar.gz -C > \"{{user `udthome`}}\"/bin/",
-	"ln -s /usr/lib/x86_64-linux-gnu/libgdbm.so /usr/lib/libgdbm.so.2",
-	"sh -c i cd \"{{user `udthome`}}\"/bin; \(echo yes | cat\) | ./udtinstall",
-	"ENV PATH $PATH:\"{{user `udthome`}}\"/bin",
-	"sed -i 's/MAX_RETN_LEVEL=[0-9]\+/MAX_RETN_LEVEL=10/;s/MAX_CAPT_LEVEL=[0-9]\+/MAX_CAPT_LEVEL=10/' /usr/ud81/include/udtconfig"
+        "sudo tar xvfz /tmp/bin.tar.gz -C > \"{{user `udthome`}}\"/bin/",
+        "ln -s /usr/lib/x86_64-linux-gnu/libgdbm.so /usr/lib/libgdbm.so.2",
+        "sh -c i cd \"{{user `udthome`}}\"/bin; \(echo yes | cat\) | ./udtinstall",
+        "ENV PATH $PATH:\"{{user `udthome`}}\"/bin",
+        "sed -i 's/MAX_RETN_LEVEL=[0-9]\+/MAX_RETN_LEVEL=10/;s/MAX_CAPT_LEVEL=[0-9]\+/MAX_CAPT_LEVEL=10/' /usr/ud81/include/udtconfig"
+      ]
+    },
+    { "type": "file",
+      "destination": "/tmp/InfoLeaseAppServer_install.sh",
+      "source": "InfoLeaseAppServer_install.sh"
+    },
+    { "type": "shell",
+      "inline": [
+        "sh -c \"(echo 1 && echo \"{{user `infolease_base`}}\"/info && echo \"{{user `udthome`}}\" && echo info && echo 1 && echo idsroot && echo && echo && echo && echo && echo main && echo && echo) | sh /tmp/InfoLeaseAppServer_install.sh"
+      ]
+    },
+    { "type": "file",
+      "destination": "/tmp/\"{{user `info_license`}}\"",
+      "source": "{{user `info_license`}}\""
+    },
+    { "type": "file",
+      "destination": "/tmp/InfoLeaseJDBCBridge_install.sh",
+      "source": "InfoLeaseJDBCBridge_install.sh"
+    },
+    { "type": "shell",
+      "inline": [
+        "sh -c \"(echo 1 && echo \"{{user `infolease_base`}}\" && echo \"{{user `infolease_base`}}/\"{{user `info_license`}}\" && echo main && echo 2 && echo db && echo && echo && echo IL10DB && echo n && echo test && echo test && echo test && echo && echo && echo && echo 2048 && echo \"{{user `infolease_base`}}\"/info/IL10.DB.ACCT && echo idsroot && echo ids123 && echo ids123 && echo &&  echo n) | sh  /tmp/InfoLeaseJDBCBridge_install.sh"
+      ]
+    },
+    { "type": "file",
+      "destination": "/temp/acct.gz",
+      "source": "acct.gz"
+    },
+    { "type": "shell",
+      "inline": [
+        "rm -f /tmp/InfoLease*.sh acct.tgz"
+      ]
+    },
+    { "type": "file",
+      "destination": "/\"{{user `infolease_base`}}\"/setup_account.sh",
+      "source": "setup_account.sh"
+    },
+    { "type": "shell",
+       "inline": [
+        "sh \"{{user `infolease_base`}}\"/setup_account.sh"
+      ]
+    },
+    { "type": "shell",
+      "inline": [
+        "mv /tmp/IL10.DB.ACCT/* $INFOLEASE_BASE/info/IL10.DB.ACCT",
+        "chown -R idsroot:info $INFOLEASE_BASE/info",
+        "mkdir \"{{user `infolease_base`}}\"/log"
+      ]
+    },
+    { "type": "file",
+      "destination": "/var/lib/tomcat8/webapps",
+      "source": "webil.war"
+    },
+    { "type": "shell",
+      "inline": [
+        "rm -fr /var/lib/tomcat8/webapps/ROOT",
+        "mkdir /var/lib/tomcat8/infoleaseConfig",
+        "cd /var/lib/tomcat8/webapps && unzip -q webil.war -d webil && rm webil.war"
       ]
     }
   ]
-} 
+}
