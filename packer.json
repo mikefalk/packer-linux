@@ -66,6 +66,51 @@
     { "type": "file",
       "destination": "/tmp/\"{{user `info_license`}}\"",
       "source": "{{user `info_license`}}\""
+    },
+    { "type": "file",
+      "destination": "/tmp/InfoLeaseJDBCBridge_install.sh",
+      "source": "InfoLeaseJDBCBridge_install.sh"
+    },
+    { "type": "shell",
+      "inline": [
+        "sh -c \"(echo 1 && echo \"{{user `infolease_base`}}\" && echo \"{{user `infolease_base`}}/\"{{user `info_license`}}\" && echo main && echo 2 && echo db && echo && echo && echo IL10DB && echo n && echo test && echo test && echo test && echo && echo && echo && echo 2048 && echo \"{{user `infolease_base`}}\"/info/IL10.DB.ACCT && echo idsroot && echo ids123 && echo ids123 && echo &&  echo n) | sh  /tmp/InfoLeaseJDBCBridge_install.sh"
+      ]
+    },
+    { "type": "file",
+      "destination": "/temp/acct.gz",
+      "source": "acct.gz"
+    },
+    { "type": "shell",
+      "inline": [
+	"rm -f /tmp/InfoLease*.sh acct.tgz"
+      ]
+    },
+    { "type": "file",
+      "destination": "/\"{{user `infolease_base`}}\"/setup_account.sh",
+      "source": "setup_account.sh"
+    },
+    { "type": "shell",
+      "inline": [
+	"sh \"{{user `infolease_base`}}\"/setup_account.sh"
+      ]
+    },
+    { "type": "shell",
+      "inline": [
+	"mv /tmp/IL10.DB.ACCT/* $INFOLEASE_BASE/info/IL10.DB.ACCT",
+	"chown -R idsroot:info $INFOLEASE_BASE/info",
+	"mkdir \"{{user `infolease_base`}}\"/log"
+      ]
+    },
+    { "type": "file",
+      "destination": "/var/lib/tomcat8/webapps",
+      "source": "webil.war"
+    },
+    { "type": "shell",
+      "inline": [
+        "rm -fr /var/lib/tomcat8/webapps/ROOT",
+	"mkdir /var/lib/tomcat8/infoleaseConfig",
+	"cd /var/lib/tomcat8/webapps && unzip -q webil.war -d webil && rm webil.war"
+      ]
     }
   ]
 }
